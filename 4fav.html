@@ -160,6 +160,7 @@ function displayFavorites() {
     const container = document.getElementById("favorites");
     container.innerHTML = "";
     const favorites = currentUser.favorites.slice(1);
+
     favorites.forEach((movie, i) => {
         const div = document.createElement("div");
         div.className = "card p-3 favorite-poster flex flex-col items-center"; 
@@ -170,6 +171,17 @@ function displayFavorites() {
         `;
         container.appendChild(div);
     });
+
+    if (window.innerWidth <= 640) {
+        const placeholderDiv = document.createElement("div");
+        placeholderDiv.className = "card p-3 favorite-poster flex flex-col items-center";
+        placeholderDiv.id = "placeholderPoster";
+        placeholderDiv.innerHTML = `
+            <img src="Emptyposter.png" alt="Missing Poster" class="rounded-lg mb-2 max-w-full h-auto">
+            <p class="font-semibold text-gray-500 text-center">#1 Favorite</p>
+        `;
+        container.appendChild(placeholderDiv);
+    }
 }
 
 const searchInput = document.getElementById("movieSearch");
@@ -199,6 +211,15 @@ searchInput.addEventListener("input", async () => {
 function revealCorrectMovie(showConfetti = true) {
     const correctMovieDiv = document.getElementById("correctMovie");
     const movie = currentUser.favorites[0];
+
+    const placeholder = document.getElementById("placeholderPoster");
+    if (placeholder) {
+        placeholder.innerHTML = `
+            <img src="${movie.poster_url}" alt="${movie.title}" class="rounded-lg mb-2 max-w-full h-auto">
+            <p class="font-semibold text-white text-center">${movie.title}</p>
+        `;
+    }
+
     correctMovieDiv.innerHTML = `
         <h3 class="text-2xl font-bold text-gradient-accent">#1 Favorite Movie:</h3>
         <div class="card p-3 w-64">
@@ -207,6 +228,7 @@ function revealCorrectMovie(showConfetti = true) {
         </div>
     `;
     correctMovieDiv.classList.remove("hidden");
+
     if (showConfetti) {
         confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
     }
