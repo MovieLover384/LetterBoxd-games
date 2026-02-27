@@ -1,0 +1,48 @@
+:root {
+  --film-orange: hsl(25,95%,55%);
+  --film-orange-glow: hsl(25,90%,65%);
+  --film-green: hsl(160,40%,40%);
+  --film-surface: hsl(220,18%,15%);
+  --film-dark: hsl(220,20%,8%);
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--film-dark);
+  color: hsl(40,20%,92%);
+  margin: 0;
+}
+
+h1,h2,h3,h4 {
+  font-family: 'Libre Baskerville', serif;
+}
+
+.text-gradient-accent {
+  background: linear-gradient(135deg, var(--film-orange), hsl(35,90%,60%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--film-orange);
+  border-radius: 3px;
+}
+
+
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.favorite-poster {
+  animation: fadeInUp 0.8s ease forwards;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.favorite-poster:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 25px -5px hsl(25,95%,55% / 0.6);
+}

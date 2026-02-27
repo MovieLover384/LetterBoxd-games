@@ -1,0 +1,86 @@
+:root {
+  --film-orange: hsl(25,95%,55%);
+  --film-orange-glow: hsl(25,90%,65%);
+  --film-green: hsl(160,40%,40%);
+  --film-surface: hsl(220,18%,15%);
+  --film-dark: hsl(220,20%,8%);
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--film-dark);
+  color: hsl(40,20%,92%);
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1,h2,h3,h4 { font-family: 'Libre Baskerville', serif; }
+.text-gradient-accent { background: linear-gradient(135deg, var(--film-orange), hsl(35,90%,60%)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background-color: var(--film-orange); border-radius: 3px; }
+
+.text-gradient-accent {
+  background: linear-gradient(135deg, var(--film-orange), hsl(35,90%,60%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+.card {
+  background: var(--film-surface);
+  border-radius: 1rem;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  box-shadow: 0 8px 32px -8px hsl(220,40%,5% / 0.6);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 35px -5px var(--film-orange-glow);
+}
+
+.button {
+  display: inline-block;
+  padding: 10px 25px;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: transform 0.2s ease, background 0.2s ease;
+  text-decoration: none;
+}
+
+.button-primary {
+  background: var(--film-orange);
+  color: var(--film-dark);
+}
+.button-primary:hover {
+  transform: scale(1.05);
+  background: var(--film-orange-glow);
+}
+
+.button-secondary {
+  background: var(--film-green);
+  color: var(--film-dark);
+}
+.button-secondary:hover {
+  transform: scale(1.05);
+  background: hsl(160,35%,55%);
+}
+
+.footer {
+  border-top: 1px solid hsl(25,95%,55% / 0.3);
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.footer h3 {
+  color: var(--film-orange);
+  margin-bottom: 0.5rem;
+}
+
+.footer p {
+  color: hsl(220,10%,70%);
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
+}
