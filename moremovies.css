@@ -45,3 +45,9 @@ h1,h2,h3,h4 {
   transform: scale(1.05);
   box-shadow: 0 12px 25px -5px hsl(25,95%,55% / 0.6);
 }
+
+@media (max-width: 768px) {
+    .favorite-poster {
+        width: 24vw; 
+    }
+}

@@ -94,9 +94,39 @@ let leftPlayer = null;
 let rightPlayer = null;
 let score = 0;
 
+function updateButtonLabels() {
+    const isMobile = window.innerWidth <= 768;
+    const btnLeft = document.getElementById('chooseLeft');
+    const btnRight = document.getElementById('chooseRight');
+
+    if (isMobile) {
+        btnLeft.innerText = 'Down';
+        btnRight.innerText = 'Up';
+    } else {
+        btnLeft.innerText = 'Left';
+        btnRight.innerText = 'Right';
+    }
+}
+
+
+window.addEventListener('load', updateButtonLabels);
+window.addEventListener('resize', updateButtonLabels);
+
 async function loadData() {
     members = await fetch('members.json').then(res => res.json());
     favorites = await fetch('4fav.json').then(res => res.json());
+
+    members = members.filter(member => {
+        return favorites.some(f => f.username === member.username && f.favorites && f.favorites.length > 0);
+    });
+
+    if (members.length < 2) {
+        document.getElementById('players').innerHTML = "<p class='text-gray-400 italic'>Not enough users with favorite movies to play.</p>";
+        document.getElementById('chooseLeft').disabled = true;
+        document.getElementById('chooseRight').disabled = true;
+        return;
+    }
+
     startNewRound();
 }
 
@@ -126,19 +156,28 @@ function displayPlayers() {
         const favs = favorites.find(f => f.username === player.username)?.favorites || [];
         const div = document.createElement('div');
         div.className = "flex flex-col items-center gap-3";
-        div.innerHTML = `
-            <h3 class="text-2xl font-bold text-gradient-accent">${player.username}</h3>
-            <div class="grid grid-cols-2 gap-2">
-                ${favs.map(f => `
-                    <div class="relative group">
-                        <img src="${f.poster_url}" alt="${f.title}" class="w-32 rounded-lg favorite-poster">
-                        <div class="absolute inset-0 bg-black bg-opacity-70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 rounded-lg text-center p-2 transition-opacity">
-                            ${f.title}
+
+        if (favs.length === 0) {
+            div.innerHTML = `
+                <h3 class="text-2xl font-bold text-gradient-accent">${player.username}</h3>
+                <p class="text-gray-400 italic">No favorite movies available</p>
+            `;
+        } else {
+            div.innerHTML = `
+                <h3 class="text-2xl font-bold text-gradient-accent">${player.username}</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    ${favs.map(f => `
+                        <div class="relative group">
+                            <img src="${f.poster_url}" alt="${f.title}" class="w-32 rounded-lg favorite-poster">
+                            <div class="absolute inset-0 bg-black bg-opacity-70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 rounded-lg text-center p-2 transition-opacity">
+                                ${f.title}
+                            </div>
                         </div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
+                    `).join('')}
+                </div>
+            `;
+        }
+
         container.appendChild(div);
     });
 }
