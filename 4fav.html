@@ -105,8 +105,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script>
-const TMDB_API_KEY = "24dc57e9b13d83092f00c2583f89b335";
-
 let users = [];
 let currentUser = null;
 let previousUser = null;
@@ -116,25 +114,6 @@ async function loadUsers() {
     const res = await fetch("4fav.json");
     users = await res.json();
     startNewGame();
-}
-
-async function getMoviePoster(title) {
-    try {
-        const query = encodeURIComponent(title);
-        const res = await fetch(
-            `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${query}`
-        );
-        const data = await res.json();
-        if (data.results && data.results.length > 0) {
-            const movie = data.results.find(m => m.poster_path);
-            if (movie && movie.poster_path) {
-                return `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-            }
-        }
-        return "https://via.placeholder.com/300x450?text=No+Poster";
-    } catch (err) {
-        return "https://via.placeholder.com/300x450?text=No+Poster";
-    }
 }
 
 function startNewGame() {
@@ -187,21 +166,18 @@ function displayFavorites() {
 const searchInput = document.getElementById("movieSearch");
 const suggestionsBox = document.getElementById("suggestions");
 
-searchInput.addEventListener("input", async () => {
-    const query = searchInput.value.trim();
+searchInput.addEventListener("input", () => {
+    const query = searchInput.value.trim().toLowerCase();
     suggestionsBox.innerHTML = "";
-    if (query.length < 2) return;
-
-    const movies = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}`)
-                        .then(res => res.json())
-                        .then(data => data.results.slice(0,5));
-
-    movies.forEach(movie => {
+    if (query.length < 1) return;
+    const allMovies = currentUser.favorites.map(m => m.title);
+    const filtered = allMovies.filter(title => title.toLowerCase().includes(query));
+    filtered.slice(0,5).forEach(title => {
         const div = document.createElement("div");
         div.className = "p-3 cursor-pointer hover:bg-orange-600 hover:text-black rounded";
-        div.textContent = movie.title + " (" + (movie.release_date?.split("-")[0] || "N/A") + ")";
+        div.textContent = title;
         div.onclick = () => {
-            searchInput.value = movie.title;
+            searchInput.value = title;
             suggestionsBox.innerHTML = "";
         };
         suggestionsBox.appendChild(div);
@@ -211,7 +187,6 @@ searchInput.addEventListener("input", async () => {
 function revealCorrectMovie(showConfetti = true) {
     const correctMovieDiv = document.getElementById("correctMovie");
     const movie = currentUser.favorites[0];
-
     const placeholder = document.getElementById("placeholderPoster");
     if (placeholder) {
         placeholder.innerHTML = `
@@ -219,7 +194,6 @@ function revealCorrectMovie(showConfetti = true) {
             <p class="font-semibold text-white text-center">${movie.title}</p>
         `;
     }
-
     correctMovieDiv.innerHTML = `
         <h3 class="text-2xl font-bold text-gradient-accent">#1 Favorite Movie:</h3>
         <div class="card p-3 w-64">
@@ -228,7 +202,6 @@ function revealCorrectMovie(showConfetti = true) {
         </div>
     `;
     correctMovieDiv.classList.remove("hidden");
-
     if (showConfetti) {
         confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
     }
