@@ -107,8 +107,9 @@ let score = 0;
 
 async function loadData() {
     const data = await fetch('film_ratings.json').then(res => res.json());
+    // Only keep films with numeric rating_value
     films = data.data.filter(f => typeof f.rating_value === "number");
-    remainingFilms = [...films];
+    remainingFilms = [...films]; // copy for tracking per round
     startRound();
 }
 
@@ -118,13 +119,15 @@ function startRound() {
     document.getElementById('higherBtn').disabled = false;
     document.getElementById('lowerBtn').disabled = false;
 
+
     if (!leftFilm) {
-        if (remainingFilms.length === 0) return;
+        if (remainingFilms.length === 0) remainingFilms = [...films];
         leftFilm = remainingFilms.splice(Math.floor(Math.random() * remainingFilms.length), 1)[0];
     }
 
     if (remainingFilms.length === 0) {
-        document.getElementById('result').innerText = `Congratulations! You guessed all movies! 🎉 Final Score: ${score}`;
+        document.getElementById('result').innerText = 
+            `Congratulations! You guessed all movies! 🎉 Final Score: ${score}`;
         document.getElementById('higherBtn').disabled = true;
         document.getElementById('lowerBtn').disabled = true;
         return;
@@ -174,7 +177,8 @@ function slideRightToLeft() {
         rightDiv.style.transform = '';
 
         if (remainingFilms.length === 0) {
-            document.getElementById('result').innerText = `Congratulations! You guessed all movies! 🎉 Final Score: ${score}`;
+            document.getElementById('result').innerText = 
+                `Congratulations! You guessed all movies! 🎉 Final Score: ${score}`;
             document.getElementById('higherBtn').disabled = true;
             document.getElementById('lowerBtn').disabled = true;
             return;
@@ -210,13 +214,15 @@ function makeGuess(higher) {
         document.getElementById('nextBtnContainer').classList.remove('hidden');
         score = 0;
         document.getElementById('score').innerText = `Score: 0`;
+        leftFilm = null;
+        rightFilm = null;
+        remainingFilms = [...films]; // reset for new round
     }
 }
 
 document.getElementById('higherBtn').addEventListener('click', () => makeGuess(true));
 document.getElementById('lowerBtn').addEventListener('click', () => makeGuess(false));
 document.getElementById('nextBtn').addEventListener('click', () => {
-    leftFilm = rightFilm;
     startRound();
 });
 
